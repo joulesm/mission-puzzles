@@ -130,7 +130,7 @@ def rule7():
 	# Harvey can see Kimball's float directly in front of him.
 	harvey = findName('Harvey')
 	kimball = findName('Kimball')
-	return harvey.canSee(kimball)
+	return harvey.getFloatInFront(kimball)
 
 def rule8():
 	# The violet float is next to the yellow float if and only if Li's float is pink.
