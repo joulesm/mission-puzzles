@@ -246,7 +246,7 @@ def checkRules():
   for rule in allRules:
     if not rule():
       return
-  with open('answer.txt', 'a') as af:
+  with open('pride_answer.txt', 'a') as af:
     for f in floatArray:
       af.write(f.color + ' ' + f.name + ' ' + f.direction + '\n')
     af.write(printAnswer() + '\n')
