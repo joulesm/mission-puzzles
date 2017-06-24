@@ -1,3 +1,4 @@
+# A parade float
 class pFloat:
   def __init__(self, index):
     self.index = index
@@ -11,7 +12,7 @@ class pFloat:
     self.name = name
 
   def setDirection(self, direction):
-  	# west, east
+  	# east, west
     self.direction = direction
 
   def canSee(self, who):
@@ -46,7 +47,6 @@ class pFloat:
   def getLetter(self):
     if self.index >= len(self.name):
       return ''
-
     if self.direction == 'east':
       return self.name[self.index]
     else:
@@ -62,18 +62,18 @@ def findName(name):
   	if f.name == name:
   		return f
 
-## Rules
+## Global values
 varx = 0
 vary = 0
 varz = 0
+
+## Rules
 
 def rule1():
 	# The person in the orange float can see exactly x floats 
 	# more than Phyllis can, where x is some number.
 	global varx
-	orange = findColor('orange')
-	phyllis = findName('Phyllis')
-	varx = orange.howManyISee() - phyllis.howManyISee()
+	varx = findColor('orange').howManyISee() - findName('Phyllis').howManyISee()
 	return True
 
 def rule2():
@@ -84,15 +84,13 @@ def rule2():
   if blue.direction == violet.direction:
   	return 'Patria' in (blue.name, violet.name)
   else:
-  	green = findColor('green')
-  	return green.name == 'Patria'
+  	return findColor('green').name == 'Patria'
 
 def rule3():
 	# The person in the blue float can see, directly in front of it, 
 	# another float whose driver has x letters in his/her name.
 	global varx
-	blue = findColor('blue')
-	neighbor = blue.getFloatInFront()
+	neighbor = findColor('blue').getFloatInFront()
 	if neighbor is None:
 		return False
 	else:
@@ -101,9 +99,7 @@ def rule3():
 def rule4():
 	# There is an even number of floats between Harvey's and 
 	# the pink float (not including themselves).
-	harvey = findName('Harvey')
-	pink = findColor('pink')
-	return abs(harvey.index - pink.index + 1) % 2 == 0
+	return abs(findName('Harvey').index - findColor('pink').index + 1) % 2 == 0
 
 def rule5():
 	# The red float is the farthest west.
@@ -112,7 +108,6 @@ def rule5():
 def rule6():
 	# If Courtney's float is blue, orange, violet, or green, 
 	# then at least one of Courtney's neighbors has a name containing the letter Y.
-	# CONTRAPOSITIVE
 	courtney = findName('Courtney')
 	cNeighbors = courtney.getNeighbors()
 	if courtney.color in ('blue', 'orange', 'violet', 'green'):
@@ -121,84 +116,60 @@ def rule6():
 				return True
 		return False
 	else:
-		# for neighbor in cNeighbors:
-		# 	if 'y' in neighbor.name:
-		# 		return False
 		return True
 
 def rule7():
 	# Harvey can see Kimball's float directly in front of him.
-	harvey = findName('Harvey')
-	kimball = findName('Kimball')
-	return harvey.getFloatInFront() == kimball
+	return findName('Harvey').getFloatInFront() == findName('Kimball')
 
 def rule8():
 	# The violet float is next to the yellow float if and only if Li's float is pink.
-	li = findName('Li')
 	violet = findColor('violet')
 	yellow = findColor('yellow')
-	if li.color == 'pink':
+	if findName('Li').color == 'pink':
 		return abs(violet.index - yellow.index) == 1
 	else:
 		return abs(violet.index - yellow.index) != 1
 
 def rule9():
 	# The people in the orange and pink floats can see the blue float somewhere ahead.
-	orange = findColor('orange')
-	pink = findColor('pink')
 	blue = findColor('blue')
-	return orange.canSee(blue) and pink.canSee(blue)
+	return findColor('orange').canSee(blue) and findColor('pink').canSee(blue)
 
 def rule10():
 	# If Li's float is east of Harvey's, then Li's float is either orange or pink.
-	# CONTRAPOSITIVE
-  liColors = ('orange', 'pink')
   li = findName('Li')
-  harvey = findName('Harvey')
-  if li.index > harvey.index:
-    return li.color in liColors
+  if li.index > findName('Harvey').index:
+    return li.color in ('orange', 'pink')
   else:
-		# return li.color not in liColors
     return True
 
 def rule11():
 	# If Harvey's float is red or orange, then Kimball's float is a primary color.
-	# CONTRAPOSITIVE
-  primary = ('red', 'yellow', 'blue')
-  harvey = findName('Harvey')
-  kimball = findName('Kimball')
-  if harvey.color in ('red', 'orange'):
-    return kimball.color in primary
+  if findName('Harvey').color in ('red', 'orange'):
+    return findName('Kimball').color in ('red', 'yellow', 'blue')
   else:
-		# return kimball.color not in primary
     return True
 
 def rule12():
 	# If the red and yellow floats are next to each other, 
 	# then the person in the red float can see fewer than y other floats, where y = x + 1.
-	# CONTRAPOSITIVE
   global varx
   global vary
   vary = varx + 1
   red = findColor('red')
-  yellow = findColor('yellow')
-  if abs(red.index - yellow.index) == 1:
+  if abs(red.index - findColor('yellow').index) == 1:
     return red.howManyISee() < vary
   else:
-		# return red.howManyISee() >= vary
     return True
 
 def rule13():
 	# If Christopher's float is a secondary color, 
 	# then he can see more floats than Courtney can.
-	# CONTRAPOSITIVE
-  secondary = ('orange', 'green', 'violet')
   christopher = findName('Christopher')
-  courtney = findName('Courtney')
-  if christopher.color in secondary:
-    return christopher.howManyISee() > courtney.howManyISee()
+  if christopher.color in ('orange', 'green', 'violet'):
+    return christopher.howManyISee() > findName('Courtney').howManyISee()
   else:
-    # return christopher.howManyISee() <= courtney.howManyISee()
     return True
 
 def rule14():
@@ -207,15 +178,13 @@ def rule14():
 	global vary
 	global varz
 	varz = varx * vary
-	red = findColor('red')
-	return len(red.name) == varz
+	return len(findColor('red').name) == varz
 
 def rule15():
 	# The pink, violet, and green floats are facing the same direction.
   pink = findColor('pink')
-  violet = findColor('violet')
-  green = findColor('green')
-  return pink.direction == violet.direction and pink.direction == green.direction
+  return (pink.direction == findColor('violet').direction 
+  	and pink.direction == findColor('green').direction)
 
 #### Run
 
